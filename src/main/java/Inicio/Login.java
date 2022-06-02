@@ -1,24 +1,40 @@
 
 package Inicio;
+import Control.Inventario;
 import Inicio.VentanaInicio;
+import Post.PostUsuarios;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.awt.*;
 import javax.imageio.*;
 import java.io.*;
 import java.awt.Graphics;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 public class Login extends javax.swing.JFrame {
     public static VentanaInicio ventanainicio = new VentanaInicio();
     
-    Logo img = new Logo();
+    String Usuario;
+    String Pass;
     
     public Login() {
         initComponents();
         this.setLocationRelativeTo(null);
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -35,8 +51,8 @@ public class Login extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        txtUsuario = new javax.swing.JTextField();
+        txtPass = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -126,11 +142,11 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(146, Short.MAX_VALUE))
         );
@@ -142,11 +158,11 @@ public class Login extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(9, 9, 9)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
                 .addContainerGap(50, Short.MAX_VALUE))
@@ -188,10 +204,52 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        Loguearse();
         this.setVisible(false);
         ventanainicio.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    private final Object[] column = new Object[]{
+      "Id", "NUsuario", "Password"
+    };
+    private final DefaultTableModel model = new DefaultTableModel(column, 0);
+    
+    public void Loguearse(){
+        Usuario = txtUsuario.getText();
+        Pass = String.valueOf(txtPass.getPassword());
+        
+        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
+                .uri(URI.create("https://polarcity-app.herokuapp.com/usuarios")).build();
+        try {
+            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
+            
+            java.util.List<PostUsuarios> postsu = convertirObjeto(response.body(), new TypeReference<java.util.List<PostUsuarios>>(){}) ;
+            
+            postsu.stream().forEach(item -> {
+                model.addRow(new Object[] {item.getId(), item.getNombreUsuario(), item.getContraseñaUsuario()});
+            });
+            
+           
+                    
+        } catch (IOException |InterruptedException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }      
+    }
+    
+    final ObjectMapper mapper = new ObjectMapper();
+    
+    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
+        try {
+            return this.mapper.readValue(json, reference);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         JOptionPane.showMessageDialog(null, "Integrantes del grupo: \n"
             + "\n"
@@ -246,8 +304,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPasswordField txtPass;
+    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
     class Logo extends JPanel{

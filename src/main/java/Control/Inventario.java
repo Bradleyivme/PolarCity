@@ -1,9 +1,22 @@
 
 package Control;
 import Inicio.*;
+import Post.PostProductos;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 public class Inventario extends javax.swing.JFrame {
     
@@ -11,9 +24,42 @@ public class Inventario extends javax.swing.JFrame {
     public static Facturacion facturacion = new Facturacion();
     public static OrdenDePago ordpago = new OrdenDePago();
     
+    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    private final Object[] column = new Object[]{
+      "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
+    };
+    private final DefaultTableModel model = new DefaultTableModel(column, 0);
+    
     public Inventario() {
         initComponents();
         this.setLocationRelativeTo(null);
+        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
+                .uri(URI.create("https://polarcity-app.herokuapp.com/productos")).build();
+        try {
+            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
+            
+            List<PostProductos> postsp = convertirObjeto(response.body(), new TypeReference<List<PostProductos>>(){}) ;
+            
+            postsp.stream().forEach(item -> {
+                model.addRow(new Object[] {item.getId(), item.getCodigo(), item.getNombreProducto(), item.getDescripcion(), item.getPrecio()});
+            });
+            
+            this.TableInven.setModel(model);
+                    
+        } catch (IOException |InterruptedException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    final ObjectMapper mapper = new ObjectMapper();
+    
+    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
+        try {
+            return this.mapper.readValue(json, reference);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 
@@ -32,7 +78,7 @@ public class Inventario extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TableInven = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -145,7 +191,10 @@ public class Inventario extends javax.swing.JFrame {
                 .addGap(43, 43, 43))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableInven.setBackground(new java.awt.Color(0, 0, 102));
+        TableInven.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        TableInven.setForeground(new java.awt.Color(255, 255, 255));
+        TableInven.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -156,7 +205,7 @@ public class Inventario extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(TableInven);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -174,10 +223,10 @@ public class Inventario extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -273,6 +322,7 @@ public class Inventario extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable TableInven;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -284,7 +334,6 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
 }
