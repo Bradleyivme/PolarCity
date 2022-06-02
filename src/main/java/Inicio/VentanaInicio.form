@@ -193,7 +193,7 @@
                       <Color blue="66" green="0" red="0" type="rgb"/>
                     </Property>
                     <Property name="rows" type="int" value="5"/>
-                    <Property name="text" type="java.lang.String" value="Aqui podras llevar tu control de inventario,&#xa;facturacion y Orden de pago, escoge dandole &#xa;click al boton que necesites."/>
+                    <Property name="text" type="java.lang.String" value="Aqui podras llevar tu control de inventario,&#xa;facturacion y orden de pago, escoge dandole &#xa;click al boton que necesites."/>
                   </Properties>
                 </Component>
               </SubComponents>

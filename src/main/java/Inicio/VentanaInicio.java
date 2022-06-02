@@ -80,7 +80,7 @@ public class VentanaInicio extends javax.swing.JFrame {
         jTextArea1.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         jTextArea1.setForeground(new java.awt.Color(0, 0, 102));
         jTextArea1.setRows(5);
-        jTextArea1.setText("Aqui podras llevar tu control de inventario,\nfacturacion y Orden de pago, escoge dandole \nclick al boton que necesites.");
+        jTextArea1.setText("Aqui podras llevar tu control de inventario,\nfacturacion y orden de pago, escoge dandole \nclick al boton que necesites.");
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setBackground(new java.awt.Color(0, 0, 102));
