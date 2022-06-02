@@ -48,7 +48,7 @@ public class UsuariosAuto extends javax.swing.JFrame {
             this.TableUs.setModel(model);
                     
         } catch (IOException |InterruptedException ex) {
-            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
         }    
     }
     
@@ -58,7 +58,7 @@ public class UsuariosAuto extends javax.swing.JFrame {
         try {
             return this.mapper.readValue(json, reference);
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

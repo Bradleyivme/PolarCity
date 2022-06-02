@@ -1,6 +1,7 @@
 
 package Inicio;
 import Control.Inventario;
+import Control.UsuariosAuto;
 import Inicio.VentanaInicio;
 import Post.PostUsuarios;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,18 +17,22 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import Post.*;
 
 public class Login extends javax.swing.JFrame {
     public static VentanaInicio ventanainicio = new VentanaInicio();
     
     String Usuario;
     String Pass;
+    
+    public static ArrayList<PostUsuarios> ListadUs = new ArrayList();
     
     public Login() {
         initComponents();
@@ -204,10 +209,27 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Usuario = txtUsuario.getText();
+        Pass = String.valueOf(txtPass.getPassword());
+//        this.setVisible(false);
+//        ventanainicio.setVisible(true);
+        Boolean puedeEntrar = this.comprobar();
         
-        Loguearse();
-        this.setVisible(false);
-        ventanainicio.setVisible(true);
+        if(puedeEntrar){
+        
+            JOptionPane.showMessageDialog(null,"Credenciales correctas!");
+            this.setVisible(false);
+            ventanainicio.setVisible(true);
+            
+        }else{
+        
+            JOptionPane.showMessageDialog(null,"Credenciales incorrectas!");
+            txtUsuario.setText("");
+            txtPass.setText("");
+        
+        }
+            
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
@@ -217,8 +239,6 @@ public class Login extends javax.swing.JFrame {
     private final DefaultTableModel model = new DefaultTableModel(column, 0);
     
     public void Loguearse(){
-        Usuario = txtUsuario.getText();
-        Pass = String.valueOf(txtPass.getPassword());
         
         final HttpRequest requestPost = HttpRequest.newBuilder().GET()
                 .uri(URI.create("https://polarcity-app.herokuapp.com/usuarios")).build();
@@ -231,10 +251,9 @@ public class Login extends javax.swing.JFrame {
                 model.addRow(new Object[] {item.getId(), item.getNombreUsuario(), item.getContraseñaUsuario()});
             });
             
-           
-                    
+            
         } catch (IOException |InterruptedException ex) {
-            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
         }      
     }
     
@@ -244,11 +263,29 @@ public class Login extends javax.swing.JFrame {
         try {
             return this.mapper.readValue(json, reference);
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
     
+    public Boolean comprobar(){
+    
+            Loguearse();
+            
+            boolean credencialescorrectas = false;
+            Iterator<PostUsuarios> iterador = ListadUs.iterator();
+            
+            while(iterador.hasNext()){
+                
+                PostUsuarios tempus = iterador.next();
+                
+                if(tempus.getNombreUsuario().equals(Usuario) && tempus.getContraseñaUsuario().equals(Pass)){
+                    credencialescorrectas = true;
+                    break;
+                }
+            }
+            return credencialescorrectas;
+    }
     
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         JOptionPane.showMessageDialog(null, "Integrantes del grupo: \n"
