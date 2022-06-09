@@ -21,44 +21,44 @@ public class Facturacion extends javax.swing.JFrame {
     public static Inventario inventario = new Inventario();
     public static OrdenDePago ordpago = new OrdenDePago();
     
-    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-    private final Object[] column = new Object[]{
-      "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
-    };
-    private final DefaultTableModel model = new DefaultTableModel(column, 0);
+//    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+//    private final Object[] column = new Object[]{
+//      "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
+//    };
+//    private final DefaultTableModel model = new DefaultTableModel(column, 0);
     
     public Facturacion() {
         initComponents();
         this.setLocationRelativeTo(null);
-        
-        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
-                .uri(URI.create("https://polarcity-app.herokuapp.com/productos")).build();
-        try {
-            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
-            
-            List<PostProductos> postsp = convertirObjeto(response.body(), new TypeReference<List<PostProductos>>(){}) ;
-            
-            postsp.stream().forEach(item -> {
-                model.addRow(new Object[] {item.getId(), item.getCodigo(), item.getNombreProducto(), item.getDescripcion(), item.getPrecio()});
-            });
-            
-            this.TableFact.setModel(model);
-                    
-        } catch (IOException |InterruptedException ex) {
-            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        
+//        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
+//                .uri(URI.create("https://polarcity-app.herokuapp.com/productos")).build();
+//        try {
+//            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
+//            
+//            List<PostProductos> postsp = convertirObjeto(response.body(), new TypeReference<List<PostProductos>>(){}) ;
+//            
+//            postsp.stream().forEach(item -> {
+//                model.addRow(new Object[] {item.getId(), item.getCodigo(), item.getNombreProducto(), item.getDescripcion(), item.getPrecio()});
+//            });
+//            
+//            this.TableFact.setModel(model);
+//                    
+//        } catch (IOException |InterruptedException ex) {
+//            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
     
-    final ObjectMapper mapper = new ObjectMapper();
-    
-    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
-        try {
-            return this.mapper.readValue(json, reference);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+//    final ObjectMapper mapper = new ObjectMapper();
+//    
+//    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
+//        try {
+//            return this.mapper.readValue(json, reference);
+//        } catch (JsonProcessingException ex) {
+//            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

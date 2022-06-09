@@ -1,18 +1,9 @@
 
-package Post;
+package Inicio;
 
-public class PostUsuarios {
-    private Integer id;
+public class Usuarios {
     private String nombreUsuario;
     private String passwordUsuario;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getNombreUsuario() {
         return nombreUsuario;
@@ -29,6 +20,6 @@ public class PostUsuarios {
     public void setPasswordUsuario(String passwordUsuario) {
         this.passwordUsuario = passwordUsuario;
     }
-
+    
     
 }

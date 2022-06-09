@@ -42,7 +42,7 @@ public class UsuariosAuto extends javax.swing.JFrame {
             List<PostUsuarios> postsu = convertirObjeto(response.body(), new TypeReference<List<PostUsuarios>>(){}) ;
             
             postsu.stream().forEach(item -> {
-                model.addRow(new Object[] {item.getId(), item.getNombreUsuario(), item.getContraseñaUsuario()});
+                model.addRow(new Object[] {item.getId(), item.getNombreUsuario(), item.getPasswordUsuario()});
             });
             
             this.TableUs.setModel(model);
