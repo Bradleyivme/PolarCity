@@ -8,14 +8,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Scanner;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static java.util.stream.Stream.builder;
 import javax.swing.table.DefaultTableModel;
 
 public class Inventario extends javax.swing.JFrame {
@@ -24,7 +30,14 @@ public class Inventario extends javax.swing.JFrame {
     public static Facturacion facturacion = new Facturacion();
     public static OrdenDePago ordpago = new OrdenDePago();
     
+    
+   // post 
+    private  HttpClient httpClientpost = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+            
+            
+    //GET 
     private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+   
     private final Object[] column = new Object[]{
       "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
     };
@@ -33,6 +46,11 @@ public class Inventario extends javax.swing.JFrame {
     public Inventario() {
         initComponents();
         this.setLocationRelativeTo(null);
+        
+        
+           
+        
+        
         final HttpRequest requestPost = HttpRequest.newBuilder().GET()
                 .uri(URI.create("https://polarcity-app.herokuapp.com/productos")).build();
         try {
@@ -61,6 +79,62 @@ public class Inventario extends javax.swing.JFrame {
         }
         return null;
     }
+    
+    
+    
+    
+    // para el metodo post esta area 
+    
+ /* public void whenSendPostRequestUsingHttpClient_thenCorrect() throws URISyntaxException, IOException{
+       final  HttpRequest requestp = HttpRequest.newBuilder()
+           .uri(new URI("hhttps://polarcity-app.herokuapp.com/productos"))
+           .headers("Content-Type", "text/plain;charset=UTF-8")
+           .POST(HttpRequest.BodyPublishers.ofString("{\"codigo\":\"000\",\"nombreProducto\":\"----\",\"descripcion\":\"----\",\"precio\":0.00}"))
+           .build();
+    HttpRequest request = HttpRequest.newBuilder()
+       .uri(URI.create("https://polarcity-app.herokuapp.com/productos"))
+       .headers("Content-Type", "text/plain;charset=UTF-8")
+       .POST(HttpRequest.BodyPublishers.ofString("{\"codigo\":\"000\",\"nombreProducto\":\"----\",\"descripcion\":\"----\",\"precio\":0.00}"))
+       .build();
+       
+  
+  
+  }*/
+    
+  public void postmethod() throws IOException, InterruptedException{
+    String json = new StringBuilder()
+                .append("{")
+                .append("\"id\":\" \",")
+                .append("\"codigo\":\"058\",")
+                .append("\"nombreProducto\":\"tomate\",")
+                .append("\"descripcion\":\"rojos\",")
+                .append("\"precio\":\"10.00\"")
+                .append("}").toString();
+
+        // add json header
+        HttpRequest request = HttpRequest.newBuilder()
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .uri(URI.create("https://polarcity-app.herokuapp.com/productos"))
+                .setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClientpost.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // print status code
+        System.out.println(response.statusCode());
+
+        // print response body
+        System.out.println(response.body());
+
+    }
+
+    
+    
+  
+  
+ 
+  
 
 
     @SuppressWarnings("unchecked")
@@ -76,7 +150,7 @@ public class Inventario extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        BTNCREARINV = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         txtIDP = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -169,10 +243,15 @@ public class Inventario extends javax.swing.JFrame {
         jButton4.setForeground(new java.awt.Color(0, 0, 102));
         jButton4.setText("MODIFICAR");
 
-        jButton5.setBackground(new java.awt.Color(255, 255, 255));
-        jButton5.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(0, 0, 102));
-        jButton5.setText("CREAR");
+        BTNCREARINV.setBackground(new java.awt.Color(255, 255, 255));
+        BTNCREARINV.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        BTNCREARINV.setForeground(new java.awt.Color(0, 0, 102));
+        BTNCREARINV.setText("CREAR");
+        BTNCREARINV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTNCREARINVActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -217,7 +296,7 @@ public class Inventario extends javax.swing.JFrame {
                         .addGap(25, 25, 25))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(BTNCREARINV, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(60, 60, 60))))
         );
@@ -249,7 +328,7 @@ public class Inventario extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addComponent(jButton4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton5)
+                .addComponent(BTNCREARINV)
                 .addGap(31, 31, 31))
         );
 
@@ -357,6 +436,15 @@ public class Inventario extends javax.swing.JFrame {
         txtPre.setText(TableInven.getValueAt(f, 4).toString());
     }//GEN-LAST:event_TableInvenMouseClicked
 
+    private void BTNCREARINVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNCREARINVActionPerformed
+        try {
+            // TODO add your handling code here:
+            postmethod();
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_BTNCREARINVActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -399,12 +487,12 @@ public class Inventario extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BTNCREARINV;
     private javax.swing.JTable TableInven;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
