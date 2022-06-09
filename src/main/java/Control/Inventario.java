@@ -268,6 +268,11 @@ public class Inventario extends javax.swing.JFrame {
             }
         ));
         TableInven.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        TableInven.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableInvenMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(TableInven);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -342,6 +347,15 @@ public class Inventario extends javax.swing.JFrame {
         this.setVisible(false);
         facturacion.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void TableInvenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableInvenMouseClicked
+        int f = TableInven.rowAtPoint(evt.getPoint());
+        txtIDP.setText(TableInven.getValueAt(f, 0).toString());
+        txtCod.setText(TableInven.getValueAt(f, 1).toString());
+        txtNP.setText(TableInven.getValueAt(f, 2).toString());
+        txtDes.setText(TableInven.getValueAt(f, 3).toString());
+        txtPre.setText(TableInven.getValueAt(f, 4).toString());
+    }//GEN-LAST:event_TableInvenMouseClicked
 
     /**
      * @param args the command line arguments
