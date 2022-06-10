@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static java.util.stream.Stream.builder;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Inventario extends javax.swing.JFrame {
@@ -492,8 +493,23 @@ public class Inventario extends javax.swing.JFrame {
         DefaultTableModel modeld = (DefaultTableModel) TableInven.getModel(); 
           model.setRowCount(0);
         try {
+           
+            if (txtCod.getText().isEmpty() || txtNP.getText().isEmpty()|| txtDes.getText().isEmpty()|| txtPre.getText().isEmpty()){
+             JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios"
+                     + "El ID del producto que desea cambiar es OBLIGATORIO");
+        
+        }else{
+             postmethod();
+         
+        } 
             // TODO add your handling code here:
-            postmethod();
+           
+            
+            
+            
+            
+            
+            
         } catch (IOException | InterruptedException ex) {
            
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
@@ -516,8 +532,16 @@ public class Inventario extends javax.swing.JFrame {
            DefaultTableModel modeld = (DefaultTableModel) TableInven.getModel(); 
           model.setRowCount(0);
        try {
-            // TODO add your handling code here:
-            puttmethod();
+            if (txtIDP.getText().isEmpty() || txtCod.getText().isEmpty() || txtNP.getText().isEmpty()|| txtDes.getText().isEmpty()|| txtPre.getText().isEmpty()){
+             JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios"
+                     + "El ID del producto que desea cambiar es OBLIGATORIO");
+        
+        }else{
+            
+          puttmethod();
+        } 
+          
+            
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
             
