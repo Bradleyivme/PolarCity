@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -32,6 +33,8 @@ public class OrdenDePago extends javax.swing.JFrame {
     private  HttpClient httpClient2 = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
    // post 
     private  HttpClient httpClientpost = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+   // post 
+    private  HttpClient httpClientpost2 = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
     
     private final Object[] column = new Object[]{
       "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
@@ -137,6 +140,40 @@ public class OrdenDePago extends javax.swing.JFrame {
                 .build();
 
         HttpResponse<String> response = httpClient2.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // print status code
+        System.out.println(response.statusCode());
+
+        // print response body
+        System.out.println(response.body());
+
+    }
+
+    public void postmethod3() throws IOException, InterruptedException{
+        String a = txtIO.getText();
+        String b = txtNC.getText();
+        String c = txtNIC.getText();
+        String d = txtTFO.getText();
+//        int c = Integer.parseInt(txtNIC.getText());
+//        double d = Double.valueOf(txtTFO.getText());
+        
+        String json3 = new StringBuilder()
+                .append("{")
+                .append("\"id\":\""+ a +"\",")
+                .append("\"nombreCliente\":\""+ b +"\",")
+                .append("\"nit\":\""+ c +"\",")
+                .append("\"total\":\""+ d +"\"")
+                .append("}").toString();
+
+        // add json header
+        HttpRequest request = HttpRequest.newBuilder()
+                .POST(HttpRequest.BodyPublishers.ofString(json3))
+                .uri(URI.create("https://polarcity-app.herokuapp.com/facturas"))
+                .setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClientpost2.send(request, HttpResponse.BodyHandlers.ofString());
 
         // print status code
         System.out.println(response.statusCode());
@@ -297,6 +334,11 @@ public class OrdenDePago extends javax.swing.JFrame {
         btnDespachar.setForeground(new java.awt.Color(0, 0, 102));
         btnDespachar.setText("DESPACHAR");
         btnDespachar.setBorderPainted(false);
+        btnDespachar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDespacharActionPerformed(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
@@ -685,6 +727,19 @@ public class OrdenDePago extends javax.swing.JFrame {
         txtTFO.setText(TableOrden.getValueAt(f, 3).toString());
         
     }//GEN-LAST:event_TableOrdenMouseClicked
+
+    private void btnDespacharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDespacharActionPerformed
+        try {
+            // TODO add your handling code here:
+            postmethod3();
+            JOptionPane.showMessageDialog(null, "Datos enviados a Facturacion exitosamente.");
+        } catch (IOException | InterruptedException ex) {
+           
+            Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Error al enviar datos.");
+        }
+        
+    }//GEN-LAST:event_btnDespacharActionPerformed
 
     public static void main(String args[]) {
 

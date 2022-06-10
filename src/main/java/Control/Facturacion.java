@@ -1,6 +1,7 @@
 
 package Control;
 import Inicio.*;
+import Post.PostFacturas;
 import Post.PostProductos;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -21,44 +22,47 @@ public class Facturacion extends javax.swing.JFrame {
     public static Inventario inventario = new Inventario();
     public static OrdenDePago ordpago = new OrdenDePago();
     
-//    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-//    private final Object[] column = new Object[]{
-//      "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
-//    };
-//    private final DefaultTableModel model = new DefaultTableModel(column, 0);
+    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    private final Object[] column = new Object[]{
+      "Id", "NombreCliente", "Nit", "Total" 
+    };
+    private final DefaultTableModel model = new DefaultTableModel(column, 0);
     
     public Facturacion() {
         initComponents();
         this.setLocationRelativeTo(null);
-//        
-//        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
-//                .uri(URI.create("https://polarcity-app.herokuapp.com/productos")).build();
-//        try {
-//            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
-//            
-//            List<PostProductos> postsp = convertirObjeto(response.body(), new TypeReference<List<PostProductos>>(){}) ;
-//            
-//            postsp.stream().forEach(item -> {
-//                model.addRow(new Object[] {item.getId(), item.getCodigo(), item.getNombreProducto(), item.getDescripcion(), item.getPrecio()});
-//            });
-//            
-//            this.TableFact.setModel(model);
-//                    
-//        } catch (IOException |InterruptedException ex) {
-//            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        ObtenerDatos();
     }
     
-//    final ObjectMapper mapper = new ObjectMapper();
-//    
-//    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
-//        try {
-//            return this.mapper.readValue(json, reference);
-//        } catch (JsonProcessingException ex) {
-//            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
+    public void ObtenerDatos(){
+        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
+                .uri(URI.create("https://polarcity-app.herokuapp.com/facturas")).build();
+        try {
+            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
+            
+            List<PostFacturas> postsp = convertirObjeto(response.body(), new TypeReference<List<PostFacturas>>(){}) ;
+            
+            postsp.stream().forEach(item -> {
+                model.addRow(new Object[] {item.getId(), item.getId(), item.getNombreCliente(), item.getNit(), item.getTotal()});
+            });
+            
+            this.TableFac.setModel(model);
+                    
+        } catch (IOException |InterruptedException ex) {
+            Logger.getLogger(Facturacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    final ObjectMapper mapper = new ObjectMapper();
+    
+    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
+        try {
+            return this.mapper.readValue(json, reference);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(Facturacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -71,7 +75,8 @@ public class Facturacion extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TableFact = new javax.swing.JTable();
+        TableFac = new javax.swing.JTable();
+        btnActualizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -119,9 +124,9 @@ public class Facturacion extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(53, 53, 53)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addGap(50, 50, 50)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -130,19 +135,19 @@ public class Facturacion extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton3)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jButton3)
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        TableFact.setBackground(new java.awt.Color(0, 0, 102));
-        TableFact.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        TableFact.setForeground(new java.awt.Color(255, 255, 255));
-        TableFact.setModel(new javax.swing.table.DefaultTableModel(
+        TableFac.setBackground(new java.awt.Color(0, 0, 102));
+        TableFac.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        TableFac.setForeground(new java.awt.Color(255, 255, 255));
+        TableFac.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -153,7 +158,18 @@ public class Facturacion extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(TableFact);
+        jScrollPane1.setViewportView(TableFac);
+
+        btnActualizar.setBackground(new java.awt.Color(0, 0, 102));
+        btnActualizar.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
+        btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
+        btnActualizar.setText("ACTUALIZAR TABLA");
+        btnActualizar.setBorderPainted(false);
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -161,15 +177,21 @@ public class Facturacion extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(264, 264, 264))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(btnActualizar)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -222,6 +244,13 @@ public class Facturacion extends javax.swing.JFrame {
         ordpago.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        DefaultTableModel modeld = (DefaultTableModel) TableFac.getModel(); 
+          model.setRowCount(0);
+        
+        ObtenerDatos();
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -258,7 +287,8 @@ public class Facturacion extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable TableFact;
+    private javax.swing.JTable TableFac;
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
