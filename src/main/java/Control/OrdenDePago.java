@@ -1,22 +1,98 @@
 
 package Control;
 import Inicio.*;
+import Post.PostOrdenes;
+import Post.PostProductos;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 public class OrdenDePago extends javax.swing.JFrame {
     
     public static VentanaInicio ventanainicio = new VentanaInicio();
     public static Inventario inventario = new Inventario();
     public static Facturacion facturacion = new Facturacion();
-  
+    public static ArrayList<PostOrdenes> Ordenes = new ArrayList();
+    public int TotalFinal = 0;
+    
+    //GET 
+    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+   
+    private final Object[] column = new Object[]{
+      "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
+    };
+    private final DefaultTableModel model = new DefaultTableModel(column, 0);
+    
     public OrdenDePago() {
         initComponents();
         this.setLocationRelativeTo(null);
+        ObtenerDatos();
+        LLenarTablaOrdenes();
     }
-
+    
+    final ObjectMapper mapper = new ObjectMapper();
+    
+    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
+        try {
+            return this.mapper.readValue(json, reference);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public void ObtenerDatos(){
+        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
+                .uri(URI.create("https://polarcity-app.herokuapp.com/productos")).build();
+        try {
+            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
+            
+            List<PostProductos> postsp = convertirObjeto(response.body(), new TypeReference<List<PostProductos>>(){}) ;
+            
+            postsp.stream().forEach(item -> {
+                model.addRow(new Object[] {item.getId(), item.getCodigo(), item.getNombreProducto(), item.getDescripcion(), item.getPrecio()});
+            });
+            
+            this.TableInven2.setModel(model);
+                    
+        } catch (IOException |InterruptedException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void LLenarTablaOrdenes(){
+        
+        DefaultTableModel model2 = new DefaultTableModel(new String[]{"IdOrden","NombreCliente","Nit","Total"},Ordenes.size());
+        TableOrden.setModel(model2);
+        
+        TableModel modeloDatos = TableOrden.getModel();
+        for(int i = 0; i < Ordenes.size(); i++){
+            PostOrdenes Orden = new PostOrdenes();
+            modeloDatos.setValueAt(Orden.getId(), i, 0);
+            modeloDatos.setValueAt(Orden.getNombreCliente(), i, 1);
+            modeloDatos.setValueAt(Orden.getNit(), i, 2);
+            modeloDatos.setValueAt(Orden.getTotal(), i, 3);
+        }
+        
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -25,12 +101,46 @@ public class OrdenDePago extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        btnDespachar = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        txtNC = new javax.swing.JTextField();
+        txtNIC = new javax.swing.JTextField();
+        txtTFO = new javax.swing.JTextField();
+        btnOrdenar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TableInven2 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jButton4 = new javax.swing.JButton();
+        TableProdOrd = new javax.swing.JTable();
+        btnAgregar = new javax.swing.JButton();
+        txtCod = new javax.swing.JTextField();
+        txtDes = new javax.swing.JTextField();
+        txtNP = new javax.swing.JTextField();
+        txtPT = new javax.swing.JTextField();
+        txtPre = new javax.swing.JTextField();
+        txtCan = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        TableOrden = new javax.swing.JTable();
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,11 +187,11 @@ public class OrdenDePago extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -105,11 +215,43 @@ public class OrdenDePago extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("ORDEN DE PAGO");
 
-        jButton5.setBackground(new java.awt.Color(255, 255, 255));
-        jButton5.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(0, 0, 102));
-        jButton5.setText("DESPACHAR");
-        jButton5.setBorderPainted(false);
+        btnDespachar.setBackground(new java.awt.Color(255, 255, 255));
+        btnDespachar.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        btnDespachar.setForeground(new java.awt.Color(0, 0, 102));
+        btnDespachar.setText("DESPACHAR");
+        btnDespachar.setBorderPainted(false);
+
+        jLabel8.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Nombre del cliente:");
+
+        jLabel9.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel9.setText("Nit del cliente:");
+
+        jLabel10.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("Total final de la orden:");
+
+        txtNC.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        txtNC.setForeground(new java.awt.Color(0, 0, 102));
+
+        txtNIC.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        txtNIC.setForeground(new java.awt.Color(0, 0, 102));
+
+        txtTFO.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
+        txtTFO.setForeground(new java.awt.Color(102, 0, 0));
+        txtTFO.setEnabled(false);
+
+        btnOrdenar.setBackground(new java.awt.Color(255, 255, 255));
+        btnOrdenar.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        btnOrdenar.setForeground(new java.awt.Color(0, 0, 102));
+        btnOrdenar.setText("ORDENAR");
+        btnOrdenar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrdenarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -119,7 +261,14 @@ public class OrdenDePago extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnDespachar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel9)
+                    .addComponent(txtNC)
+                    .addComponent(txtNIC)
+                    .addComponent(txtTFO)
+                    .addComponent(btnOrdenar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -127,15 +276,29 @@ public class OrdenDePago extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtNC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtNIC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTFO, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(btnOrdenar)
+                .addGap(18, 18, 18)
+                .addComponent(btnDespachar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setBackground(new java.awt.Color(0, 0, 102));
-        jTable1.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        jTable1.setForeground(new java.awt.Color(255, 255, 255));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableInven2.setBackground(new java.awt.Color(0, 0, 102));
+        TableInven2.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        TableInven2.setForeground(new java.awt.Color(255, 255, 255));
+        TableInven2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -146,9 +309,17 @@ public class OrdenDePago extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        TableInven2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableInven2MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(TableInven2);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        TableProdOrd.setBackground(new java.awt.Color(0, 0, 102));
+        TableProdOrd.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        TableProdOrd.setForeground(new java.awt.Color(255, 255, 255));
+        TableProdOrd.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -159,13 +330,84 @@ public class OrdenDePago extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(TableProdOrd);
 
-        jButton4.setBackground(new java.awt.Color(255, 255, 255));
-        jButton4.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 0, 102));
-        jButton4.setText("ORDENAR");
-        jButton4.setBorderPainted(false);
+        btnAgregar.setBackground(new java.awt.Color(0, 0, 102));
+        btnAgregar.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        btnAgregar.setForeground(new java.awt.Color(255, 255, 255));
+        btnAgregar.setText("AGREGAR");
+        btnAgregar.setBorderPainted(false);
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        txtCod.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        txtCod.setForeground(new java.awt.Color(0, 0, 102));
+
+        txtDes.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        txtDes.setForeground(new java.awt.Color(0, 0, 102));
+
+        txtNP.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        txtNP.setForeground(new java.awt.Color(0, 0, 102));
+
+        txtPT.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        txtPT.setForeground(new java.awt.Color(0, 0, 102));
+        txtPT.setEnabled(false);
+
+        txtPre.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        txtPre.setForeground(new java.awt.Color(0, 0, 102));
+
+        txtCan.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        txtCan.setForeground(new java.awt.Color(0, 0, 102));
+        txtCan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCanActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        jLabel2.setText("Codigo:");
+
+        jLabel3.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        jLabel3.setText("Nombre del producto:");
+
+        jLabel4.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        jLabel4.setText("Descripcion:");
+
+        jLabel5.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        jLabel5.setText("Cantidad:");
+
+        jLabel6.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        jLabel6.setText("Precio:");
+
+        jLabel7.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
+        jLabel7.setText("Precio total:");
+
+        TableOrden.setBackground(new java.awt.Color(0, 0, 102));
+        TableOrden.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        TableOrden.setForeground(new java.awt.Color(255, 255, 255));
+        TableOrden.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "IdOrden", "NombreCliente", "Nit", "Total"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(TableOrden);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -174,11 +416,38 @@ public class OrdenDePago extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addComponent(jScrollPane2)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtCan, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtPT, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtCod, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(txtNP, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(16, 16, 16)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(txtDes, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(txtPre, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -188,15 +457,33 @@ public class OrdenDePago extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jButton4)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtCod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAgregar)
+                            .addComponent(txtPT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 8, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -250,15 +537,43 @@ public class OrdenDePago extends javax.swing.JFrame {
         facturacion.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void TableInven2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableInven2MouseClicked
+        int f = TableInven2.rowAtPoint(evt.getPoint());
+        txtCod.setText(TableInven2.getValueAt(f, 1).toString());
+        txtNP.setText(TableInven2.getValueAt(f, 2).toString());
+        txtDes.setText(TableInven2.getValueAt(f, 3).toString());
+        txtPre.setText(TableInven2.getValueAt(f, 4).toString());
+    }//GEN-LAST:event_TableInven2MouseClicked
+
+    private void txtCanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCanActionPerformed
+        int Cantidad = Integer.parseInt(txtCan.getText());
+        int Precio = Integer.parseInt(txtPre.getText());
+        int multipli = Cantidad*Precio;
+        int TotalInicio = multipli;
+        TotalFinal = TotalFinal + TotalInicio;
+        txtPT.setText(String.valueOf(TotalInicio));
+    }//GEN-LAST:event_txtCanActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        txtTFO.setText(String.valueOf(TotalFinal));
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnOrdenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdenarActionPerformed
+        
+        PostOrdenes Orden = new PostOrdenes();
+        Orden.setNombreCliente(txtNC.getText());
+        Orden.setNit(Integer.parseInt(txtNIC.getText()));
+        Orden.setTotal(Double.valueOf(txtTFO.getText()));
+        Orden.setId(Ordenes.size());
+        
+        Ordenes.add(Orden);
+        LLenarTablaOrdenes();
+        
+        
+    }//GEN-LAST:event_btnOrdenarActionPerformed
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -286,19 +601,42 @@ public class OrdenDePago extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable TableInven2;
+    private javax.swing.JTable TableOrden;
+    private javax.swing.JTable TableProdOrd;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnDespachar;
+    private javax.swing.JButton btnOrdenar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTextField txtCan;
+    private javax.swing.JTextField txtCod;
+    private javax.swing.JTextField txtDes;
+    private javax.swing.JTextField txtNC;
+    private javax.swing.JTextField txtNIC;
+    private javax.swing.JTextField txtNP;
+    private javax.swing.JTextField txtPT;
+    private javax.swing.JTextField txtPre;
+    private javax.swing.JTextField txtTFO;
     // End of variables declaration//GEN-END:variables
 }
