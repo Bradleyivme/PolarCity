@@ -35,6 +35,8 @@ public class OrdenDePago extends javax.swing.JFrame {
     private  HttpClient httpClientpost = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
    // post 
     private  HttpClient httpClientpost2 = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    //detele
+    private  HttpClient httpClientdelete = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
     
     private final Object[] column = new Object[]{
       "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
@@ -148,6 +150,27 @@ public class OrdenDePago extends javax.swing.JFrame {
         System.out.println(response.body());
 
     }
+    
+    
+     public void eliminar () throws IOException, InterruptedException{
+       
+        String a = txtIO.getText();
+       HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("https://polarcity-app.herokuapp.com/ordenes/"+a))
+            .header("Content-Type", "application/json").DELETE().build();
+          HttpResponse<String> response = httpClientdelete.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // print status code
+        System.out.println(response.statusCode());
+
+        // print response body
+        System.out.println(response.body());
+   
+   
+   
+   
+   
+   }
 
     public void postmethod3() throws IOException, InterruptedException{
         String a = txtIO.getText();
@@ -729,15 +752,19 @@ public class OrdenDePago extends javax.swing.JFrame {
     }//GEN-LAST:event_TableOrdenMouseClicked
 
     private void btnDespacharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDespacharActionPerformed
+        DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
+            model2.setRowCount(0);
         try {
             // TODO add your handling code here:
             postmethod3();
             JOptionPane.showMessageDialog(null, "Datos enviados a Facturacion exitosamente.");
+            eliminar();
         } catch (IOException | InterruptedException ex) {
            
             Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error al enviar datos.");
         }
+        ObtenerDatosOrden();
         
     }//GEN-LAST:event_btnDespacharActionPerformed
 
