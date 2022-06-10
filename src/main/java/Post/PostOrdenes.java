@@ -2,42 +2,43 @@
 package Post;
 
 public class PostOrdenes {
-    private Integer id;
-    private String NombreCliente;
-    private Integer Nit;
-    private Double Total;
+    private Integer idOrden;
+    private String nombreCliente;
+    private Integer nit;
+    private Double total;
 
-    public Integer getId() {
-        return id;
+    public Integer getIdOrden() {
+        return idOrden;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdOrden(Integer idOrden) {
+        this.idOrden = idOrden;
     }
 
     public String getNombreCliente() {
-        return NombreCliente;
+        return nombreCliente;
     }
 
-    public void setNombreCliente(String NombreCliente) {
-        this.NombreCliente = NombreCliente;
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
     }
 
     public Integer getNit() {
-        return Nit;
+        return nit;
     }
 
-    public void setNit(Integer Nit) {
-        this.Nit = Nit;
+    public void setNit(Integer nit) {
+        this.nit = nit;
     }
 
     public Double getTotal() {
-        return Total;
+        return total;
     }
 
-    public void setTotal(Double Total) {
-        this.Total = Total;
+    public void setTotal(Double total) {
+        this.total = total;
     }
+
     
     
 }

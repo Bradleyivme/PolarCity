@@ -134,7 +134,7 @@ public class Inventario extends javax.swing.JFrame {
     }
 
     
-     public void puttmethod() throws IOException, InterruptedException{
+    public void puttmethod() throws IOException, InterruptedException{
         String a = txtIDP.getText();
         String b = txtCod.getText();
         String c = txtNP.getText();

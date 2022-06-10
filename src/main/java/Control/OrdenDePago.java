@@ -28,17 +28,28 @@ public class OrdenDePago extends javax.swing.JFrame {
     
     //GET 
     private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-   
+   // GET2 
+    private  HttpClient httpClient2 = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+   // post 
+    private  HttpClient httpClientpost = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    
     private final Object[] column = new Object[]{
       "Id", "Codigo", "NProducto", "Descripcion", "Precio"  
     };
+    
+    private final Object[] column2 = new Object[]{
+      "idOrden", "NombreCliente", "Nit", "Total"  
+    };
+    
     private final DefaultTableModel model = new DefaultTableModel(column, 0);
+    
+    private final DefaultTableModel model2 = new DefaultTableModel(column2, 0);
     
     public OrdenDePago() {
         initComponents();
         this.setLocationRelativeTo(null);
         ObtenerDatos();
-        LLenarTablaOrdenes();
+        ObtenerDatosOrden();
     }
     
     final ObjectMapper mapper = new ObjectMapper();
@@ -48,6 +59,17 @@ public class OrdenDePago extends javax.swing.JFrame {
             return this.mapper.readValue(json, reference);
         } catch (JsonProcessingException ex) {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    final ObjectMapper mapper2 = new ObjectMapper();
+    
+    public <T> T convertirObjeto2(final String json, final TypeReference<T> reference){
+        try {
+            return this.mapper2.readValue(json, reference);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -71,21 +93,74 @@ public class OrdenDePago extends javax.swing.JFrame {
         }
     }
     
-    public void LLenarTablaOrdenes(){
-        
-        DefaultTableModel model2 = new DefaultTableModel(new String[]{"IdOrden","NombreCliente","Nit","Total"},Ordenes.size());
-        TableOrden.setModel(model2);
-        
-        TableModel modeloDatos = TableOrden.getModel();
-        for(int i = 0; i < Ordenes.size(); i++){
-            PostOrdenes Orden = new PostOrdenes();
-            modeloDatos.setValueAt(Orden.getId(), i, 0);
-            modeloDatos.setValueAt(Orden.getNombreCliente(), i, 1);
-            modeloDatos.setValueAt(Orden.getNit(), i, 2);
-            modeloDatos.setValueAt(Orden.getTotal(), i, 3);
+    public void ObtenerDatosOrden(){
+        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
+                .uri(URI.create("https://polarcity-app.herokuapp.com/ordenes")).build();
+        try {
+            final HttpResponse<String> response = httpClient2.send(requestPost, HttpResponse.BodyHandlers.ofString());
+            
+            List<PostOrdenes> postsp = convertirObjeto2(response.body(), new TypeReference<List<PostOrdenes>>(){}) ;
+            
+            postsp.stream().forEach(item -> {
+                model2.addRow(new Object[] {item.getIdOrden(), item.getNombreCliente(), item.getNit(), item.getTotal()});
+            });
+            
+            this.TableOrden.setModel(model2);
+                    
+        } catch (IOException |InterruptedException ex) {
+            Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
+    
+    public void postmethod2() throws IOException, InterruptedException{
+        String a = txtIO.getText();
+        String b = txtNC.getText();
+        String c = txtNIC.getText();
+        String d = txtTFO.getText();
+//        int c = Integer.parseInt(txtNIC.getText());
+//        double d = Double.valueOf(txtTFO.getText());
+        
+        String json2 = new StringBuilder()
+                .append("{")
+                .append("\"idOrden\":\""+ a +"\",")
+                .append("\"nombreCliente\":\""+ b +"\",")
+                .append("\"nit\":\""+ c +"\",")
+                .append("\"total\":\""+ d +"\"")
+                .append("}").toString();
+
+        // add json header
+        HttpRequest request = HttpRequest.newBuilder()
+                .POST(HttpRequest.BodyPublishers.ofString(json2))
+                .uri(URI.create("https://polarcity-app.herokuapp.com/ordenes"))
+                .setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient2.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // print status code
+        System.out.println(response.statusCode());
+
+        // print response body
+        System.out.println(response.body());
+
+    }
+    
+//    public void LLenarTablaOrdenes(){
+//        
+//        DefaultTableModel model2 = new DefaultTableModel(new String[]{"IdOrden","NombreCliente","Nit","Total"},Ordenes.size());
+//        TableOrden.setModel(model2);
+//        
+//        TableModel modeloDatos = TableOrden.getModel();
+//        for(int i = 0; i < Ordenes.size(); i++){
+//            PostOrdenes Orden = new PostOrdenes();
+//            modeloDatos.setValueAt(Orden.getIdOrden(), i, 0);
+//            modeloDatos.setValueAt(Orden.getNombreCliente(), i, 1);
+//            modeloDatos.setValueAt(Orden.getNit(), i, 2);
+//            modeloDatos.setValueAt(Orden.getTotal(), i, 3);
+//        }
+//        
+//    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -109,6 +184,8 @@ public class OrdenDePago extends javax.swing.JFrame {
         txtNIC = new javax.swing.JTextField();
         txtTFO = new javax.swing.JTextField();
         btnOrdenar = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        txtIO = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableInven2 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -126,7 +203,7 @@ public class OrdenDePago extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
+        jScrollPane5 = new javax.swing.JScrollPane();
         TableOrden = new javax.swing.JTable();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -223,7 +300,7 @@ public class OrdenDePago extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("Nombre del cliente:");
+        jLabel8.setText("Id Orden:");
 
         jLabel9.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -253,31 +330,48 @@ public class OrdenDePago extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("Nombre del cliente:");
+
+        txtIO.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        txtIO.setForeground(new java.awt.Color(0, 0, 102));
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDespachar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel9)
-                    .addComponent(txtNC)
-                    .addComponent(txtNIC)
-                    .addComponent(txtTFO)
-                    .addComponent(btnOrdenar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtIO)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnDespachar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel8)
+                                .addComponent(jLabel10)
+                                .addComponent(jLabel9)
+                                .addComponent(txtNC)
+                                .addComponent(txtNIC)
+                                .addComponent(txtTFO)
+                                .addComponent(btnOrdenar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel11))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtIO, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -288,11 +382,11 @@ public class OrdenDePago extends javax.swing.JFrame {
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtTFO, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addGap(28, 28, 28)
                 .addComponent(btnOrdenar)
                 .addGap(18, 18, 18)
                 .addComponent(btnDespachar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(23, 23, 23))
         );
 
         TableInven2.setBackground(new java.awt.Color(0, 0, 102));
@@ -396,18 +490,15 @@ public class OrdenDePago extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "IdOrden", "NombreCliente", "Nit", "Total"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        ));
+        TableOrden.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableOrdenMouseClicked(evt);
             }
         });
-        jScrollPane4.setViewportView(TableOrden);
+        jScrollPane5.setViewportView(TableOrden);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -447,7 +538,7 @@ public class OrdenDePago extends javax.swing.JFrame {
                                     .addComponent(jLabel6)
                                     .addComponent(txtPre, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane4))
+                    .addComponent(jScrollPane5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -480,8 +571,8 @@ public class OrdenDePago extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -504,8 +595,8 @@ public class OrdenDePago extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -516,7 +607,7 @@ public class OrdenDePago extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -555,22 +646,45 @@ public class OrdenDePago extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCanActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
+          model.setRowCount(0);
         txtTFO.setText(String.valueOf(TotalFinal));
+        ObtenerDatos();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnOrdenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdenarActionPerformed
         
-        PostOrdenes Orden = new PostOrdenes();
-        Orden.setNombreCliente(txtNC.getText());
-        Orden.setNit(Integer.parseInt(txtNIC.getText()));
-        Orden.setTotal(Double.valueOf(txtTFO.getText()));
-        Orden.setId(Ordenes.size());
-        
-        Ordenes.add(Orden);
-        LLenarTablaOrdenes();
-        
+//        PostOrdenes Orden = new PostOrdenes();
+//        Orden.setNombreCliente(txtNC.getText());
+//        Orden.setNit(Integer.parseInt(txtNIC.getText()));
+//        Orden.setTotal(Double.valueOf(txtTFO.getText()));
+//        Orden.setId(Ordenes.size());
+//        
+//        Ordenes.add(Orden);
+//        LLenarTablaOrdenes();
+        DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
+          model2.setRowCount(0);
+        try {
+            // TODO add your handling code here:
+            postmethod2();
+        } catch (IOException | InterruptedException ex) {
+           
+            Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+         ObtenerDatosOrden();
         
     }//GEN-LAST:event_btnOrdenarActionPerformed
+
+    private void TableOrdenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableOrdenMouseClicked
+      
+        int f = TableOrden.rowAtPoint(evt.getPoint());
+        txtIO.setText(TableOrden.getValueAt(f, 0).toString());
+        txtNC.setText(TableOrden.getValueAt(f, 1).toString());
+        txtNIC.setText(TableOrden.getValueAt(f, 2).toString());
+        txtTFO.setText(TableOrden.getValueAt(f, 3).toString());
+        
+    }//GEN-LAST:event_TableOrdenMouseClicked
 
     public static void main(String args[]) {
 
@@ -612,6 +726,7 @@ public class OrdenDePago extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -627,11 +742,12 @@ public class OrdenDePago extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField txtCan;
     private javax.swing.JTextField txtCod;
     private javax.swing.JTextField txtDes;
+    private javax.swing.JTextField txtIO;
     private javax.swing.JTextField txtNC;
     private javax.swing.JTextField txtNIC;
     private javax.swing.JTextField txtNP;
