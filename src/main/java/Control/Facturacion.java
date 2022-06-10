@@ -43,7 +43,7 @@ public class Facturacion extends javax.swing.JFrame {
             List<PostFacturas> postsp = convertirObjeto(response.body(), new TypeReference<List<PostFacturas>>(){}) ;
             
             postsp.stream().forEach(item -> {
-                model.addRow(new Object[] {item.getId(), item.getId(), item.getNombreCliente(), item.getNit(), item.getTotal()});
+                model.addRow(new Object[] {item.getId(), item.getNombreCliente(), item.getNit(), item.getTotal()});
             });
             
             this.TableFac.setModel(model);
