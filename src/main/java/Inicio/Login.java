@@ -242,58 +242,59 @@ public class Login extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton1ActionPerformed
     
-//    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-//    private final Object[] column = new Object[]{
-//      "Id", "NUsuario", "Password"
-//    };
-//    private final DefaultTableModel model = new DefaultTableModel(column, 0);
-//    
-//    public void Loguearse(){
-//        
-//        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
-//                .uri(URI.create("https://polarcity-app.herokuapp.com/usuarios")).build();
-//        try {
-//            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
-//            
-//            ArrayList<PostUsuarios> postsu = convertirObjeto(response.body(), new TypeReference<ArrayList<PostUsuarios>>(){}) ;
-//            
-//            postsu.stream().forEach(item -> {
-//                model.addRow(new Object[] {item.getId(), item.getNombreUsuario(), item.getPasswordUsuario()});
-//               
-//            Iterator<PostUsuarios> iterador = postsu.iterator();
-//            while(iterador.hasNext()){
-//                
-//                PostUsuarios tempus = iterador.next();
-//                
-//                if(tempus.getNombreUsuario().equals(Usuario) && tempus.getPasswordUsuario().equals(Pass)){
-//                    JOptionPane.showMessageDialog(null,"Credenciales correctas!");
-//                    this.setVisible(false);
-//                    ventanainicio.setVisible(true);
-//                    break;
-//                }else{
-//                    JOptionPane.showMessageDialog(null,"Credenciales incorrectas!");
-//                    txtUsuario.setText("");
-//                    txtPass.setText("");
-//                    break;
-//                }
-//            }
-//            });
-//            
-//        } catch (IOException |InterruptedException ex) {
-//            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
-//        }      
-//    }
-//    
-//    final ObjectMapper mapper = new ObjectMapper();
-//    
-//    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
-//        try {
-//            return this.mapper.readValue(json, reference);
-//        } catch (JsonProcessingException ex) {
-//            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
+    private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    private final Object[] column = new Object[]{
+      "Id", "NUsuario", "Password"
+    };
+    private final DefaultTableModel model = new DefaultTableModel(column, 0);
+    
+    public void Loguearse(){
+        
+        final HttpRequest requestPost = HttpRequest.newBuilder().GET()
+                .uri(URI.create("https://polarcity-app.herokuapp.com/usuarios")).build();
+        try {
+            final HttpResponse<String> response = httpClient.send(requestPost, HttpResponse.BodyHandlers.ofString());
+            
+            ArrayList<PostUsuarios> postsu = convertirObjeto(response.body(), new TypeReference<ArrayList<PostUsuarios>>(){}) ;
+            
+            postsu.stream().forEach(item -> {
+                model.addRow(new Object[] {item.getId(), item.getNombreUsuario(), item.getPasswordUsuario()});
+                
+                ArrayList<PostUsuarios> Listado2 = new ArrayList();
+                Iterator<PostUsuarios> iterador = Listado2.iterator();
+                while(iterador.hasNext()){
+
+                    PostUsuarios tempus = iterador.next();
+
+                    if(tempus.getNombreUsuario().equals(Usuario) && tempus.getPasswordUsuario().equals(Pass)){
+                        JOptionPane.showMessageDialog(null,"Credenciales correctas!");
+                        this.setVisible(false);
+                        ventanainicio.setVisible(true);
+                        break;
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Credenciales incorrectas!");
+                        txtUsuario.setText("");
+                        txtPass.setText("");
+                        break;
+                    }   
+                }
+            });
+            
+        } catch (IOException |InterruptedException ex) {
+            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
+        }      
+    }
+    
+    final ObjectMapper mapper = new ObjectMapper();
+    
+    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
+        try {
+            return this.mapper.readValue(json, reference);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(UsuariosAuto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
     
     public Boolean comprobar(){
             

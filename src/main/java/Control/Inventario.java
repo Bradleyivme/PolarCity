@@ -46,11 +46,21 @@ public class Inventario extends javax.swing.JFrame {
     public Inventario() {
         initComponents();
         this.setLocationRelativeTo(null);
-        
-        
-           
-        
-        
+        ObtenerDatos();
+    }
+    
+    final ObjectMapper mapper = new ObjectMapper();
+    
+    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
+        try {
+            return this.mapper.readValue(json, reference);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public void ObtenerDatos(){
         final HttpRequest requestPost = HttpRequest.newBuilder().GET()
                 .uri(URI.create("https://polarcity-app.herokuapp.com/productos")).build();
         try {
@@ -68,19 +78,6 @@ public class Inventario extends javax.swing.JFrame {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    final ObjectMapper mapper = new ObjectMapper();
-    
-    public <T> T convertirObjeto(final String json, final TypeReference<T> reference){
-        try {
-            return this.mapper.readValue(json, reference);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-    
-    
     
     
     // para el metodo post esta area 
@@ -101,14 +98,20 @@ public class Inventario extends javax.swing.JFrame {
   
   }*/
     
-  public void postmethod() throws IOException, InterruptedException{
-    String json = new StringBuilder()
+    public void postmethod() throws IOException, InterruptedException{
+        String a = txtIDP.getText();
+        String b = txtCod.getText();
+        String c = txtNP.getText();
+        String d = txtDes.getText();
+        String e = txtPre.getText();
+        
+        String json = new StringBuilder()
                 .append("{")
-                .append("\"id\":\" \",")
-                .append("\"codigo\":\"058\",")
-                .append("\"nombreProducto\":\"tomate\",")
-                .append("\"descripcion\":\"rojos\",")
-                .append("\"precio\":\"10.00\"")
+                .append("\"id\":\""+ a +"\",")
+                .append("\"codigo\":\""+ b +"\",")
+                .append("\"nombreProducto\":\""+ c +"\",")
+                .append("\"descripcion\":\""+ d +"\",")
+                .append("\"precio\":\""+ e +"\"")
                 .append("}").toString();
 
         // add json header
@@ -437,12 +440,21 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_TableInvenMouseClicked
 
     private void BTNCREARINVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNCREARINVActionPerformed
+        
         try {
             // TODO add your handling code here:
             postmethod();
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //TableInven.removeRowSelectionInterval(0,TableInven.getRowCount());
+        //ObtenerDatos();
+//        TableInven.setModel(model);
+//        model.fireTableDataChanged();
+        
+        //TableInven.setVisible(false);
+        
+        //this.TableInven.updateUI();
     }//GEN-LAST:event_BTNCREARINVActionPerformed
 
     /**
