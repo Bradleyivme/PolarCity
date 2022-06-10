@@ -10,12 +10,18 @@ import java.io.Serializable;
  *
  * @author herna
  */
-public class POSTAPI implements Serializable {
+public class POSTAPI  {
     private Integer id;
     private String codigo;
     private String nombreProducto;
     private String descripcion;
     private Integer precio;
+
+   
+   
+
+   
+   
 
     public Integer getId() {
         return id;
@@ -56,6 +62,7 @@ public class POSTAPI implements Serializable {
     public void setPrecio(Integer precio) {
         this.precio = precio;
     }
-    
-    
+
+   
+ 
 }

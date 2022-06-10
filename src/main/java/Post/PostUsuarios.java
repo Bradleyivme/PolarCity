@@ -1,7 +1,7 @@
 
 package Post;
 
-public class PostUsuarios {
+public class PostUsuarios  {
     private Integer id;
     private String nombreUsuario;
     private String passwordUsuario;

@@ -33,7 +33,8 @@ public class Inventario extends javax.swing.JFrame {
     
    // post 
     private  HttpClient httpClientpost = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-            
+    //put 
+       private  HttpClient httpClientput = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();    
             
     //GET 
     private HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
@@ -122,7 +123,7 @@ public class Inventario extends javax.swing.JFrame {
                 .header("Content-Type", "application/json")
                 .build();
 
-        HttpResponse<String> response = httpClientpost.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClientput.send(request, HttpResponse.BodyHandlers.ofString());
 
         // print status code
         System.out.println(response.statusCode());
@@ -133,7 +134,39 @@ public class Inventario extends javax.swing.JFrame {
     }
 
     
-    
+     public void puttmethod() throws IOException, InterruptedException{
+        String a = txtIDP.getText();
+        String b = txtCod.getText();
+        String c = txtNP.getText();
+        String d = txtDes.getText();
+        String e = txtPre.getText();
+        
+        String json = new StringBuilder()
+                .append("{")
+                .append("\"id\":\""+ a +"\",")
+                .append("\"codigo\":\""+ b +"\",")
+                .append("\"nombreProducto\":\""+ c +"\",")
+                .append("\"descripcion\":\""+ d +"\",")
+                .append("\"precio\":\""+ e +"\"")
+                .append("}").toString();
+
+        // add json header
+        HttpRequest request = HttpRequest.newBuilder()
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .uri(URI.create("https://polarcity-app.herokuapp.com/productos/"+a))
+                .setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClientpost.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // print status code
+        System.out.println(response.statusCode());
+
+        // print response body
+        System.out.println(response.body());
+
+    }
   
   
  
@@ -245,6 +278,11 @@ public class Inventario extends javax.swing.JFrame {
         jButton4.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
         jButton4.setForeground(new java.awt.Color(0, 0, 102));
         jButton4.setText("MODIFICAR");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         BTNCREARINV.setBackground(new java.awt.Color(255, 255, 255));
         BTNCREARINV.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
@@ -456,6 +494,19 @@ public class Inventario extends javax.swing.JFrame {
         
         //this.TableInven.updateUI();
     }//GEN-LAST:event_BTNCREARINVActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        
+        try {
+            // TODO add your handling code here:
+            puttmethod();
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
