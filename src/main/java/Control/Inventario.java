@@ -278,6 +278,11 @@ public class Inventario extends javax.swing.JFrame {
         jButton4.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
         jButton4.setForeground(new java.awt.Color(0, 0, 102));
         jButton4.setText("MODIFICAR");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -288,6 +293,11 @@ public class Inventario extends javax.swing.JFrame {
         BTNCREARINV.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
         BTNCREARINV.setForeground(new java.awt.Color(0, 0, 102));
         BTNCREARINV.setText("CREAR");
+        BTNCREARINV.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BTNCREARINVMouseClicked(evt);
+            }
+        });
         BTNCREARINV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BTNCREARINVActionPerformed(evt);
@@ -478,13 +488,19 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_TableInvenMouseClicked
 
     private void BTNCREARINVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNCREARINVActionPerformed
-        
+       
+        DefaultTableModel modeld = (DefaultTableModel) TableInven.getModel(); 
+          model.setRowCount(0);
         try {
             // TODO add your handling code here:
             postmethod();
         } catch (IOException | InterruptedException ex) {
+           
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
+         ObtenerDatos();
+       
         //TableInven.removeRowSelectionInterval(0,TableInven.getRowCount());
         //ObtenerDatos();
 //        TableInven.setModel(model);
@@ -497,16 +513,37 @@ public class Inventario extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        
-        try {
+           DefaultTableModel modeld = (DefaultTableModel) TableInven.getModel(); 
+          model.setRowCount(0);
+       try {
             // TODO add your handling code here:
             puttmethod();
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
-        
+        ObtenerDatos();
+       
+    
+      
+
+
         
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        // TODO add your handling code here:
+          
+        
+
+    
+        
+    }//GEN-LAST:event_jButton4MouseClicked
+
+    private void BTNCREARINVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTNCREARINVMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_BTNCREARINVMouseClicked
 
     /**
      * @param args the command line arguments
