@@ -550,6 +550,11 @@ public class OrdenDePago extends javax.swing.JFrame {
         txtPT.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         txtPT.setForeground(new java.awt.Color(0, 0, 102));
         txtPT.setEnabled(false);
+        txtPT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPTActionPerformed(evt);
+            }
+        });
 
         txtPre.setFont(new java.awt.Font("Serif", 1, 10)); // NOI18N
         txtPre.setForeground(new java.awt.Color(0, 0, 102));
@@ -757,7 +762,6 @@ public class OrdenDePago extends javax.swing.JFrame {
         int Precio = Integer.parseInt(txtPre.getText());
         int multipli = Cantidad*Precio;
         int TotalInicio = multipli;
-        TotalFinal = TotalFinal + TotalInicio;
         txtPT.setText(String.valueOf(TotalInicio));
     }//GEN-LAST:event_txtCanActionPerformed
 
@@ -766,6 +770,8 @@ public class OrdenDePago extends javax.swing.JFrame {
         String codigo = txtCod.getText();
         String nombreProducto = txtNP.getText();
         int precio = Integer.parseInt(txtPre.getText());
+        int TotalInicio = Integer.parseInt(txtPT.getText());
+        TotalFinal = TotalFinal + TotalInicio;
         
         PostCarrito c = new PostCarrito();
         c.setCodigo(codigo);
@@ -859,10 +865,14 @@ public class OrdenDePago extends javax.swing.JFrame {
     
     
     private void txtNICKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNICKeyTyped
-            if(txtNIC.getText().length() >= 12) {
+            if(txtNIC.getText().length() >= 9) {
             evt.consume();
             }
     }//GEN-LAST:event_txtNICKeyTyped
+
+    private void txtPTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPTActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPTActionPerformed
 
     public static void main(String args[]) {
 
