@@ -1,6 +1,7 @@
 
 package Control;
 import Inicio.*;
+import Post.PostCarrito;
 import Post.PostOrdenes;
 import Post.PostProductos;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,7 +25,8 @@ public class OrdenDePago extends javax.swing.JFrame {
     public static VentanaInicio ventanainicio = new VentanaInicio();
     public static Inventario inventario = new Inventario();
     public static Facturacion facturacion = new Facturacion();
-    public static ArrayList<PostOrdenes> Ordenes = new ArrayList();
+    ArrayList<PostCarrito> carrito; //= new ArrayList();
+    DefaultTableModel model3;
     public int TotalFinal = 0;
     
     //GET 
@@ -46,13 +48,21 @@ public class OrdenDePago extends javax.swing.JFrame {
       "idOrden", "NombreCliente", "Nit", "Total"  
     };
     
+    private final Object[] column3 = new Object[]{
+      "codigo", "nombreProducto", "precio" 
+    };
+    
     private final DefaultTableModel model = new DefaultTableModel(column, 0);
     
     private final DefaultTableModel model2 = new DefaultTableModel(column2, 0);
     
+    //private final DefaultTableModel model3 = new DefaultTableModel(column2, 0);    
+    
     public OrdenDePago() {
         initComponents();
         this.setLocationRelativeTo(null);
+        carrito = new ArrayList();
+        model3 = new DefaultTableModel(column3, 0);
         ObtenerDatos();
         ObtenerDatosOrden();
     }
@@ -165,11 +175,7 @@ public class OrdenDePago extends javax.swing.JFrame {
 
         // print response body
         System.out.println(response.body());
-   
-   
-   
-   
-   
+
    }
 
     public void postmethod3() throws IOException, InterruptedException{
@@ -206,20 +212,46 @@ public class OrdenDePago extends javax.swing.JFrame {
 
     }
     
-//    public void LLenarTablaOrdenes(){
+    public void LLenarTablaCarrito(){
+              
+        
+        model3 = (DefaultTableModel) TableCarr.getModel();
+        Object[] ob = new Object[3];
+        for(int i = 0; i < carrito.size(); i++){
+            ob[0] = carrito.get(i).getCodigo();
+            ob[1] = carrito.get(i).getNombreProducto();
+            ob[2] = carrito.get(i).getPrecio();
+            model3.addRow(ob);
+        }
+        
+        TableCarr.setModel(model3);
+        
+    }
+    
+    public void LimpiarTablaCarrito(){
+              
+        for(int i = 0; i < model3.getRowCount(); i++){
+            model3.removeRow(i);
+            i = i-1;
+        }   
+    }
+    
+    public void VaciarCarrito(){
+        carrito.clear();
+    }
+    
+//    public void ObtenerDatosCarrito(){
 //        
-//        DefaultTableModel model2 = new DefaultTableModel(new String[]{"IdOrden","NombreCliente","Nit","Total"},Ordenes.size());
-//        TableOrden.setModel(model2);
+//        String codigo = txtCod.getText();
+//        String nombreProducto = txtNP.getText();
+//        int precio = Integer.parseInt(txtPre.getText());
 //        
-//        TableModel modeloDatos = TableOrden.getModel();
-//        for(int i = 0; i < Ordenes.size(); i++){
-//            PostOrdenes Orden = new PostOrdenes();
-//            modeloDatos.setValueAt(Orden.getIdOrden(), i, 0);
-//            modeloDatos.setValueAt(Orden.getNombreCliente(), i, 1);
-//            modeloDatos.setValueAt(Orden.getNit(), i, 2);
-//            modeloDatos.setValueAt(Orden.getTotal(), i, 3);
-//        }
+//        PostCarrito c = new PostCarrito();
+//        c.setCodigo(codigo);
+//        c.setNombreProducto(nombreProducto);
+//        c.setPrecio(precio);
 //        
+//        carrito.add(c);
 //    }
     
     @SuppressWarnings("unchecked")
@@ -249,7 +281,7 @@ public class OrdenDePago extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         TableInven2 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        TableProdOrd = new javax.swing.JTable();
+        TableCarr = new javax.swing.JTable();
         btnAgregar = new javax.swing.JButton();
         txtCod = new javax.swing.JTextField();
         txtDes = new javax.swing.JTextField();
@@ -477,21 +509,18 @@ public class OrdenDePago extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(TableInven2);
 
-        TableProdOrd.setBackground(new java.awt.Color(0, 0, 102));
-        TableProdOrd.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        TableProdOrd.setForeground(new java.awt.Color(255, 255, 255));
-        TableProdOrd.setModel(new javax.swing.table.DefaultTableModel(
+        TableCarr.setBackground(new java.awt.Color(0, 0, 102));
+        TableCarr.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        TableCarr.setForeground(new java.awt.Color(255, 255, 255));
+        TableCarr.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Codigo", "NombreProducto", "Precio"
             }
         ));
-        jScrollPane2.setViewportView(TableProdOrd);
+        jScrollPane2.setViewportView(TableCarr);
 
         btnAgregar.setBackground(new java.awt.Color(0, 0, 102));
         btnAgregar.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
@@ -728,22 +757,31 @@ public class OrdenDePago extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCanActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        
+        String codigo = txtCod.getText();
+        String nombreProducto = txtNP.getText();
+        int precio = Integer.parseInt(txtPre.getText());
+        
+        PostCarrito c = new PostCarrito();
+        c.setCodigo(codigo);
+        c.setNombreProducto(nombreProducto);
+        c.setPrecio(precio);
+        
+        carrito.add(c);
+        
         DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
           model.setRowCount(0);
         txtTFO.setText(String.valueOf(TotalFinal));
         ObtenerDatos();
+        
+        //ObtenerDatosCarrito();
+        LimpiarTablaCarrito();
+        LLenarTablaCarrito();
+        
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnOrdenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdenarActionPerformed
         
-//        PostOrdenes Orden = new PostOrdenes();
-//        Orden.setNombreCliente(txtNC.getText());
-//        Orden.setNit(Integer.parseInt(txtNIC.getText()));
-//        Orden.setTotal(Double.valueOf(txtTFO.getText()));
-//        Orden.setId(Ordenes.size());
-//        
-//        Ordenes.add(Orden);
-//        LLenarTablaOrdenes();
         DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
           model2.setRowCount(0);
         try {
@@ -754,7 +792,12 @@ public class OrdenDePago extends javax.swing.JFrame {
             Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
             
         }
-         ObtenerDatosOrden();
+        
+        TotalFinal = 0;
+        txtTFO.setText("");
+        ObtenerDatosOrden();
+        LimpiarTablaCarrito();
+        VaciarCarrito();
         
     }//GEN-LAST:event_btnOrdenarActionPerformed
 
@@ -814,9 +857,9 @@ public class OrdenDePago extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable TableCarr;
     private javax.swing.JTable TableInven2;
     private javax.swing.JTable TableOrden;
-    private javax.swing.JTable TableProdOrd;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnDespachar;
     private javax.swing.JButton btnOrdenar;
