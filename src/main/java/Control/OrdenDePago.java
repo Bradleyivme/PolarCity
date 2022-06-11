@@ -797,8 +797,7 @@ public class OrdenDePago extends javax.swing.JFrame {
         DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
           model2.setRowCount(0);
         try {
-             
-           
+
             if (txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()|| txtCan.getText().isEmpty()){
              JOptionPane.showMessageDialog(null, "Llene los campos requeridos"
                      );
@@ -807,12 +806,7 @@ public class OrdenDePago extends javax.swing.JFrame {
                  postmethod2();
          
         } 
-         
-            
-            
-            
-            
-     
+
         } catch (IOException | InterruptedException ex) {
            
             Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
