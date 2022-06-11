@@ -489,31 +489,16 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_TableInvenMouseClicked
 
     private void BTNCREARINVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNCREARINVActionPerformed
-       
         DefaultTableModel modeld = (DefaultTableModel) TableInven.getModel(); 
           model.setRowCount(0);
         try {
-           
             if (txtCod.getText().isEmpty() || txtNP.getText().isEmpty()|| txtDes.getText().isEmpty()|| txtPre.getText().isEmpty()){
-             JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios"
-                    );
-        
+             JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios");
         }else{
              postmethod();
-         
-        } 
-            // TODO add your handling code here:
-           
-            
-            
-            
-            
-            
-            
-        } catch (IOException | InterruptedException ex) {
-           
+        }   
+        }catch (IOException | InterruptedException ex) {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
-            
         }
          ObtenerDatos();
        
@@ -528,31 +513,20 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_BTNCREARINVActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-           DefaultTableModel modeld = (DefaultTableModel) TableInven.getModel(); 
-          model.setRowCount(0);
+        DefaultTableModel modeld = (DefaultTableModel) TableInven.getModel(); 
+        model.setRowCount(0);
        try {
             if (txtIDP.getText().isEmpty() || txtCod.getText().isEmpty() || txtNP.getText().isEmpty()|| txtDes.getText().isEmpty()|| txtPre.getText().isEmpty()){
-             JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios"
-                     + " El ID del producto que desea cambiar es OBLIGATORIO");
-        
+             JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios" + " El ID del producto que desea cambiar es OBLIGATORIO");
         }else{
             
           puttmethod();
         } 
-          
             
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
-            
         }
         ObtenerDatos();
-       
-    
-      
-
-
-        
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked

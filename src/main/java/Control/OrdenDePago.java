@@ -787,37 +787,34 @@ public class OrdenDePago extends javax.swing.JFrame {
         
     }//GEN-LAST:event_TableOrdenMouseClicked
 
+    
+    
     private void btnDespacharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDespacharActionPerformed
         DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
             model2.setRowCount(0);
         try {
             if (txtIO.getText().isEmpty() ||txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()|| txtCan.getText().isEmpty()){
-             JOptionPane.showMessageDialog(null, "Llene los campos requeridos"
-                     );
-        
+             JOptionPane.showMessageDialog(null, "Llene los campos requeridos" );
         }else{
                 postmethod3();
                 JOptionPane.showMessageDialog(null, "Datos enviados a Facturacion exitosamente.");
                  eliminar();
-                
-         
         } 
-            
         } catch (IOException | InterruptedException ex) {
            
             Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Error al enviar datos.");
         }
         ObtenerDatosOrden();
-        
     }//GEN-LAST:event_btnDespacharActionPerformed
 
+    
+    
+    
     private void txtNICKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNICKeyTyped
-        // TODO add your handling code here:
-          if(txtNIC.getText().length() >= 12)
-    {
-        evt.consume();
-    }
+            if(txtNIC.getText().length() >= 12) {
+            evt.consume();
+            }
     }//GEN-LAST:event_txtNICKeyTyped
 
     public static void main(String args[]) {
