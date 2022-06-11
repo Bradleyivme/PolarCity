@@ -496,7 +496,7 @@ public class Inventario extends javax.swing.JFrame {
            
             if (txtCod.getText().isEmpty() || txtNP.getText().isEmpty()|| txtDes.getText().isEmpty()|| txtPre.getText().isEmpty()){
              JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios"
-                     + "El ID del producto que desea cambiar es OBLIGATORIO");
+                    );
         
         }else{
              postmethod();
@@ -534,7 +534,7 @@ public class Inventario extends javax.swing.JFrame {
        try {
             if (txtIDP.getText().isEmpty() || txtCod.getText().isEmpty() || txtNP.getText().isEmpty()|| txtDes.getText().isEmpty()|| txtPre.getText().isEmpty()){
              JOptionPane.showMessageDialog(null, "No se pueden guardar campos vacios"
-                     + "El ID del producto que desea cambiar es OBLIGATORIO");
+                     + " El ID del producto que desea cambiar es OBLIGATORIO");
         
         }else{
             
