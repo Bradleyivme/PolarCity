@@ -500,16 +500,14 @@ public class Inventario extends javax.swing.JFrame {
         }catch (IOException | InterruptedException ex) {
             Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
         }
-         ObtenerDatos();
-       
-        //TableInven.removeRowSelectionInterval(0,TableInven.getRowCount());
-        //ObtenerDatos();
-//        TableInven.setModel(model);
-//        model.fireTableDataChanged();
+        ObtenerDatos();
         
-        //TableInven.setVisible(false);
+        txtIDP.setText("");
+        txtNP.setText("");
+        txtCod.setText("");
+        txtDes.setText("");
+        txtPre.setText("");
         
-        //this.TableInven.updateUI();
     }//GEN-LAST:event_BTNCREARINVActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
