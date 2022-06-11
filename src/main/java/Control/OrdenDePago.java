@@ -382,6 +382,11 @@ public class OrdenDePago extends javax.swing.JFrame {
 
         txtNIC.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         txtNIC.setForeground(new java.awt.Color(0, 0, 102));
+        txtNIC.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNICKeyTyped(evt);
+            }
+        });
 
         txtTFO.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         txtTFO.setForeground(new java.awt.Color(102, 0, 0));
@@ -747,8 +752,22 @@ public class OrdenDePago extends javax.swing.JFrame {
         DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
           model2.setRowCount(0);
         try {
-            // TODO add your handling code here:
-            postmethod2();
+             
+           
+            if (txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()|| txtCan.getText().isEmpty()){
+             JOptionPane.showMessageDialog(null, "Llene los campos requeridos"
+                     );
+        
+        }else{
+                 postmethod2();
+         
+        } 
+         
+            
+            
+            
+            
+     
         } catch (IOException | InterruptedException ex) {
            
             Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
@@ -772,10 +791,18 @@ public class OrdenDePago extends javax.swing.JFrame {
         DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
             model2.setRowCount(0);
         try {
-            // TODO add your handling code here:
-            postmethod3();
-            JOptionPane.showMessageDialog(null, "Datos enviados a Facturacion exitosamente.");
-            eliminar();
+            if (txtIO.getText().isEmpty() ||txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()|| txtCan.getText().isEmpty()){
+             JOptionPane.showMessageDialog(null, "Llene los campos requeridos"
+                     );
+        
+        }else{
+                postmethod3();
+                JOptionPane.showMessageDialog(null, "Datos enviados a Facturacion exitosamente.");
+                 eliminar();
+                
+         
+        } 
+            
         } catch (IOException | InterruptedException ex) {
            
             Logger.getLogger(OrdenDePago.class.getName()).log(Level.SEVERE, null, ex);
@@ -784,6 +811,14 @@ public class OrdenDePago extends javax.swing.JFrame {
         ObtenerDatosOrden();
         
     }//GEN-LAST:event_btnDespacharActionPerformed
+
+    private void txtNICKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNICKeyTyped
+        // TODO add your handling code here:
+          if(txtNIC.getText().length() >= 12)
+    {
+        evt.consume();
+    }
+    }//GEN-LAST:event_txtNICKeyTyped
 
     public static void main(String args[]) {
 
