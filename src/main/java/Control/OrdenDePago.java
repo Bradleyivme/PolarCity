@@ -798,7 +798,7 @@ public class OrdenDePago extends javax.swing.JFrame {
           model2.setRowCount(0);
         try {
 
-            if (txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()|| txtCan.getText().isEmpty()){
+            if (txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()){
              JOptionPane.showMessageDialog(null, "Llene los campos requeridos"
                      );
         
@@ -840,7 +840,7 @@ public class OrdenDePago extends javax.swing.JFrame {
         DefaultTableModel modeld = (DefaultTableModel) TableOrden.getModel(); 
             model2.setRowCount(0);
         try {
-            if (txtIO.getText().isEmpty() ||txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()|| txtCan.getText().isEmpty()){
+            if (txtIO.getText().isEmpty() ||txtNC.getText().isEmpty() || txtNIC.getText().isEmpty()|| txtTFO.getText().isEmpty()){
              JOptionPane.showMessageDialog(null, "Llene los campos requeridos" );
         }else{
                 postmethod3();
