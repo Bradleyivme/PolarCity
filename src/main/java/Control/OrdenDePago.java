@@ -778,6 +778,13 @@ public class OrdenDePago extends javax.swing.JFrame {
         LimpiarTablaCarrito();
         LLenarTablaCarrito();
         
+        txtCod.setText("");
+        txtNP.setText("");
+        txtDes.setText("");
+        txtPre.setText("");
+        txtCan.setText("");
+        txtPT.setText("");
+        
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnOrdenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdenarActionPerformed
@@ -794,6 +801,9 @@ public class OrdenDePago extends javax.swing.JFrame {
         }
         
         TotalFinal = 0;
+        txtIO.setText("");
+        txtNC.setText("");
+        txtNIC.setText("");
         txtTFO.setText("");
         ObtenerDatosOrden();
         LimpiarTablaCarrito();
